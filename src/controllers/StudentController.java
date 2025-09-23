@@ -7,19 +7,17 @@ import views.StudentGUI;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class StudentController {
     public StudentController(StudentData model, StudentGUI view){
-        try {
-            model.loadData();
-            for(Student student : model.getStudents()){
-                view.addStudent(student);
-            }
-        } catch (IOException e) {
-//            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-        }
+        ArrayList<Student> students = model.getStudents();
+
+        students.forEach( s -> {
+            view.addStudent(s);
+        });
+
         view.setAddStudentListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -33,12 +31,13 @@ public class StudentController {
                 }
 
                 Student student = new Student(firstName, lastName, Integer.parseInt(studentID));
-                model.addStudent(student);
-                try {
-                    model.saveData();
-                } catch (IOException ex) {
-                    view.showError("Error");
+                try{
+                    model.addStudent(student);
+                }catch(SQLException ex){
+                    view.showError("Unable to add user");
+                    return;
                 }
+
                 view.addStudent(student);
                 view.clearForm();
             }
@@ -53,11 +52,7 @@ public class StudentController {
                     return;
                 }
                 model.removeStudent(student);
-                try {
-                    model.saveData();
-                } catch (IOException ex) {
-                    view.showError("Error");
-                }
+
                 view.removeStudent(student);
 
             }

@@ -4,6 +4,8 @@ import models.Student;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentGUI extends JFrame {
     private JPanel panel1;
